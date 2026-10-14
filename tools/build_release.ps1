@@ -1,4 +1,4 @@
-<#
+﻿<#
 .SYNOPSIS
   打发布包：PyInstaller onedir → 使用说明 → zip → SHA256SUMS.txt
 

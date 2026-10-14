@@ -623,6 +623,9 @@
   本机没有 pwsh 7（`powershell` 就是 5.1），CI 与用户机器都可能中招。
   **`tools/*.ps1` 存成 UTF-8 带 BOM**；改完用 `[IO.File]::ReadAllBytes()[0..2]` 核对。
 
+- **整文件重写会静默丢掉 BOM**：编辑工具写回时按无 BOM 的 UTF-8 落盘，首字节从 `EF BB BF`
+  变成 `<`，脚本随即报 `Unexpected token`。凡改过 `.ps1`，一律重新核对 BOM，别只看内容对不对。
+
 - **`2>&1 | Select-String` 会让成功的构建报 `exit code 1`**：PyInstaller 把 INFO 日志写 stderr，
   PowerShell 视作错误记录，现象与真的构建失败无法区分。
   **判据看产物**（zip 与 `SHA256SUMS.txt` 是否生成、时间戳是否新）；脚本末尾显式 `exit 0`。
