@@ -518,8 +518,10 @@
   `dodge_params.json` 确实生成在 exe 旁。
 - **入口调整**：`tools/app_main.py` 成为真正的入口（打包器只静态分析 `.py`），
   `launcher.pyw` 退化为壳；`autofix` 在打包版走 `exe --run autofix` 内部子命令。
-- **发布渠道**：`.github/workflows/release.yml` —— 推 `v*` tag 自动构建并挂 Release。
-  仓库尚未 `git init`，也没有 `LICENSE`（发布前需定）。
+- **发布渠道**：正式发布包在本机打（托管运行器没有游戏本体，提取不到图标）：
+  `tools\build_release.ps1` → `gh release create`；`.github/workflows/release.yml`
+  只做构建验证，产物走 Actions artifact，不挂 Release。
+  仓库已公开（`FanerJian/th06nc-autododge`，MIT），2026-10-14 发布 v0.1.0。
 - 详细步骤与坑 → `03-环境/相关-跨设备部署-DEPLOY.md`、`01-规范/必读-动手前的坑-PITFALLS.md` 的「打包发布」。
 
 ### 3.27 掉命取证：死亡黑匣子 + 死因解剖（2026-09-27）

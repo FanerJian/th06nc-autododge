@@ -12,7 +12,7 @@ th06nc-autododge/
 ├─ dodge_params.json    控制台「保存为默认值」写的**覆盖值**（运行数据，不是代码；删掉 = 回出厂默认）
 ├─ tools/               全部 Python / Node 工具，一个职责一个文件（`assets/` 放运行资源，如游戏图标）
 ├─ 发布/                 发布物料（包内《使用说明.txt》）
-├─ .github/workflows/   推 `v*` tag 自动构建并挂 Release
+├─ .github/workflows/   构建验证（推 `v*` tag 或手动触发；正式包在本机打）
 ├─ dist/                构建产物；可整目录删，不进仓库
 ├─ 项目文档/             本文档库（T1 索引 + T2 主题）
 ├─ _tmp/                截图、内存快照、中间产物；可整目录删
@@ -111,7 +111,7 @@ th06nc-autododge/
 |---|---|
 | `tools/build_release.ps1` | 一条命令出发布包：PyInstaller onedir → 跑 exe 冒烟自检 → 拷随包文档 → zip → `SHA256SUMS.txt` |
 | `发布/使用说明.txt` | 包内玩家说明（构建时拷进包） |
-| `.github/workflows/release.yml` | 推 `v*` tag 自动构建并挂 Release；手动触发只出 artifact |
+| `.github/workflows/release.yml` | 推 `v*` tag 或手动触发时构建一次（产物走 Actions artifact，不挂 Release） |
 
 产物：`dist\v<版本>\th06nc-autododge-v<版本>-win64.zip`（文件夹版，约 24 MB，含 numpy / capstone / tkinter）。
 选文件夹版而不是单文件：启动不必解压到临时目录，杀软误报也少。
