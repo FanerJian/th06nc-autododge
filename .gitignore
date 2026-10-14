@@ -1,0 +1,30 @@
+# 临时区与构建产物（可整目录删）
+_tmp/
+dist/
+build/
+*.spec
+
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+venv/
+
+# 运行期日志（各机器上生成，不进仓库）
+*.log
+
+# 编辑器
+.vscode/
+.idea/
+
+# 运行数据（各机器上生成：本机参数、日志）
+dodge_params.json
+
+# 游戏本体资源（版权归原作者；控制台首次运行会自动提取图标）
+tools/assets/th06nc.ico
+
+# 内部材料（不进公开仓库）
+th06nc-autododge-质量评估与优化方案.md
+
+# 上游参考：无 LICENSE，不可再分发（来源与链接见 README）
+项目文档/09-依据/ref-th06nc-practice/

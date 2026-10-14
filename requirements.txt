@@ -1,0 +1,8 @@
+# th06nc 自动避弹 —— 依赖（Windows，Python ≥ 3.8）
+numpy>=1.20
+
+# 可选：只有反汇编 / 静态分析工具要（tools/disasm.py、find_callers.py、
+# scan_xrefs.py、scan_globals.py、find_stride.py、watch_globals.py）
+# capstone>=5.0
+
+# tkinter 不用 pip：Windows 官方 Python 安装包勾选 tcl/tk 即自带（GUI 控制台要用）

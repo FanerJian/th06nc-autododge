@@ -1,0 +1,18 @@
+# build outputs
+mod/*.dll
+mod/*.o
+*.exe
+
+# python
+__pycache__/
+*.pyc
+
+# local test scratch / extracted game content (never commit assets)
+extracted/
+preview/
+preview_full/
+out/
+*.log
+
+# keep curated evidence excerpts
+!docs/evidence-*.log

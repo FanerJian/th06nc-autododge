@@ -1,0 +1,182 @@
+[
+ {
+  "addr": "0x1400020b0",
+  "name": "AnmManager__LoadAnm",
+  "comment": "[NC first-hand] LoadAnm(this, anmIdx, path, spriteIdxOffset). Signature matches the TH06 community reconstruction parameter for parameter."
+ },
+ {
+  "addr": "0x140002980",
+  "name": "AnmManager__SetActiveSprite",
+  "comment": "[NC first-hand] Resolves a script-relative sprite index against the manager's per-anm sprite base table and stores it into vm+0x100."
+ },
+ {
+  "addr": "0x140002a80",
+  "name": "AnmManager__Draw",
+  "comment": "[NC first-hand] Main draw path. Reads the anchor field (vm+0xc4 & 0x700) and compares it by value, not by bit -- see the anchor enum."
+ },
+ {
+  "addr": "0x1400068f0",
+  "name": "AnmManager__SeekInterruptLabel",
+  "comment": "[NC first-hand] Scans the script for an opcode-22 label matching vm+0x8a, remembering the -1 (default) label. Opcode 22 is a no-op during execution."
+ },
+ {
+  "addr": "0x1400069b0",
+  "name": "AnmManager__ExecuteScript",
+  "comment": "[NC first-hand] ANM v0 script interpreter. Instruction header is {s16 time; u8 opcode; u8 args_size} with args at +4; dispatch is a 36-entry jump table at 0x140007494 bounded by CMP DL,0x23."
+ },
+ {
+  "addr": "0x14000ef00",
+  "name": "BulletManager__TurnAllBulletsIntoPoints",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 83, 93. Name follows that upstream."
+ },
+ {
+  "addr": "0x14000f870",
+  "name": "BulletManager__SpawnBulletPattern",
+  "comment": "[ECL cross-match, near] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 67, 68, 69, 70, 71, 72, 73, 74, 75, 80. Name follows that upstream."
+ },
+ {
+  "addr": "0x1400105e0",
+  "name": "BulletManager__SpawnLaserPattern",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 85, 86. Name follows that upstream."
+ },
+ {
+  "addr": "0x140010870",
+  "name": "BulletManager__OnUpdate",
+  "comment": "[NC first-hand] Bullet per-frame tick. Identified by its callee profile: it calls all three player collision entry points plus AnmManager__ExecuteScript and EffectManager__SpawnParticles -- the same shape as TH06's BulletManager tick."
+ },
+ {
+  "addr": "0x1400127d0",
+  "name": "Input__PublishButtonBitmap",
+  "comment": "[NC first-hand] Merges keyboard bits with XInput pad state and writes the 6-bit pad bitmap g_PadCheatButtons (0x140c21e58)."
+ },
+ {
+  "addr": "0x140012be0",
+  "name": "Input__CollectKeyboard",
+  "comment": "[NC first-hand] Rebuilds the layout-aware scancode remap table at 0x140c21e60 via GetKeyboardLayout/MapVirtualKeyExW, then feeds the logical button bitmap builder. This is why the cheat is typed as letters, not key positions."
+ },
+ {
+  "addr": "0x140022060",
+  "name": "EclManager__RunEcl",
+  "comment": "[TH06 baseline + NC verified] Per-enemy ECL interpreter. The record layout, difficulty mask, variable encoding, time gate, and offset-to-next loop match TH06."
+ },
+ {
+  "addr": "0x14002b0d0",
+  "name": "EffectManager__SpawnParticles",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 102, 118. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002dfc0",
+  "name": "EnemyEclInstr__MoveDirTime",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 52, 53, 54, 55. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002e0a0",
+  "name": "EnemyEclInstr__MovePosTime",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 56, 57, 58, 59, 60. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002e180",
+  "name": "EnemyEclInstr__MoveTime",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 61, 62, 63, 64. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002e260",
+  "name": "EnemyEclInstr__GetVarFloat",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 8, 9, 28, 43, 44, 45, 46, 47, 48, 51, 67, 68, 69, 70, 71, 72, 73, 74, 75, 78, 82, 87, 88, 89, 90, 118. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002e620",
+  "name": "EnemyEclInstr__SetVar",
+  "comment": "[ECL cross-match, near] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 3, 4, 5, 6, 7, 9, 10, 11, 12, 26. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002ecf0",
+  "name": "EnemyEclInstr__MathAdd",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 13, 20. Name follows that upstream."
+ },
+ {
+  "addr": "0x14002f770",
+  "name": "EnemyEclInstr__MathSub",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 14, 21. Name follows that upstream."
+ },
+ {
+  "addr": "0x1400301f0",
+  "name": "EnemyEclInstr__MathMul",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 15, 22. Name follows that upstream."
+ },
+ {
+  "addr": "0x1400310f0",
+  "name": "EnemyEclInstr__MathDiv",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 16, 23. Name follows that upstream."
+ },
+ {
+  "addr": "0x140031b70",
+  "name": "EnemyEclInstr__MathMod",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 17, 24. Name follows that upstream."
+ },
+ {
+  "addr": "0x1400325f0",
+  "name": "EnemyEclInstr__MathAtan2",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 25. Name follows that upstream."
+ },
+ {
+  "addr": "0x1400360d0",
+  "name": "EnemyManager__SpawnEnemy",
+  "comment": "[TH06 baseline + NC verified] Allocates an enemy slot, initializes its ECL context, selects a subroutine from g_EclSubTable, and runs its first ECL frame."
+ },
+ {
+  "addr": "0x140036260",
+  "name": "EnemyManager__RunEclTimeline",
+  "comment": "[TH06 baseline + NC verified] Stage timeline interpreter. Runtime dispatch remains limited to opcodes 0..12 and advances by the int16 size field at +0x06."
+ },
+ {
+  "addr": "0x1400426e0",
+  "name": "ItemManager__SpawnItem",
+  "comment": "[ECL cross-match, exact] Located by matching the ECL opcodes whose handler calls it against the CC0 th06-decomp source: opcodes 119, 124. Name follows that upstream."
+ },
+ {
+  "addr": "0x140068160",
+  "name": "Player__AddedCallback",
+  "comment": "[NC first-hand] Player init: loads the player ANM, sets the spawn position (192, 384, 0.49), the hitbox RADIUS 1.25 at +0x774c and grabItemSize (12, 12, 5) at +0x9f28. All of those match TH06 numerically."
+ },
+ {
+  "addr": "0x140068820",
+  "name": "Player__OnUpdate",
+  "comment": "[NC first-hand] Player per-frame tick, registered as a chain callback (hence no direct xrefs). Tests the logical button bitmap at 0x140a6ec60: bomb on a press edge of bit 1, focus flag stored to player+0x785c from bit 2, an 8-case movement switch on the direction bits, shooting on bit 0. TH06 splits this into OnUpdate + HandlePlayerInputs (2282 + 3482 bytes); NC inlined them (5309)."
+ },
+ {
+  "addr": "0x14006a8c0",
+  "name": "Player__BombProjectileClipsBox",
+  "comment": "[NC first-hand, our own name] Walks the bomb-projectile array at player+0x7754, skips entries whose x extent is 0, and AABB-tests each against the caller's box using half extents. CC0 has this logic INLINED inside Player::CheckGraze, so there is no upstream name to borrow -- note this is the opposite of NC's usual direction, which inlines more than TH06 rather than less."
+ },
+ {
+  "addr": "0x14006a980",
+  "name": "Player__CalcKillBoxCollision",
+  "comment": "[NC first-hand] Death collision against a bullet box. Runs the bomb-projectile clip test first (0x14006a8c0), and on a hit spawns the death particles, sets the death state and enqueues sound 4 (SOUND_PICHUN) -- TH06's Player::Die is inlined here. NOT graze: the only function that enqueues sound 30 (SOUND_GRAZE) for bullets is BulletManager__OnUpdate, so CheckGraze/ScoreGraze are inlined there. The extra char parameter selects circle-vs-AABB (0) or circle-vs-circle (1)."
+ },
+ {
+  "addr": "0x14006aba0",
+  "name": "Player__CalcLaserHitbox",
+  "comment": "[NC first-hand] Laser collision. The signature matches CC0's CalcLaserHitbox(laserCenter, laserSize, rotation, angle, canGraze) parameter for parameter, and it calls cosf/sinf for the rotation plus the graze particle effect."
+ },
+ {
+  "addr": "0x14006e020",
+  "name": "ResultScreen__UpdateUnlockCheats",
+  "comment": "[NC first-hand] Runs the keyboard cheat, then an inlined 4-step XInput pad cheat over the 0x140c21e58 bitmap (hold L3+R3, Y, X, hold LB+RB). Either success sets the score.dat dirty flag at +0x9e99."
+ },
+ {
+  "addr": "0x14006e190",
+  "name": "ResultScreen__UpdateKeyboardUnlockCheat",
+  "comment": "[NC first-hand] Types-the-password cheat. Edge-detects the 8 letters of the 0x14030c520 table, walks \"classiclager\" via +0x4430, and on the 12th letter fills the CLRD table with 99. Wrong letter resets to 0, 'c' restarts at 1."
+ },
+ {
+  "addr": "0x14006e3a0",
+  "name": "ResultScreen__OnUpdate",
+  "comment": "[NC first-hand] Result-screen per-frame tick. Switches on +0x9e94 through the 18-entry jump table at 0x140072824; only state 6 (Lunatic records) reaches the cheat call at 0x14006fab4."
+ },
+ {
+  "addr": "0x140074470",
+  "name": "ResultScreen__WriteScoreDat",
+  "comment": "[NC first-hand] Serializes HSCR/CLRD/CATK/PSCR and writes score.dat. The whole body is gated on the +0x9e99 dirty flag, which the unlock cheats set."
+ }
+]

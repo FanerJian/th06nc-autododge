@@ -1,0 +1,13 @@
+; th06nc mod config (read by vcruntime140.dll proxy)
+;
+; title       - window title, UTF-8
+; frame_scale - multiplies every DxLib frame wait (diagnostic only;
+;               shortening the waits does NOT change the frame rate, see
+;               ../docs/frame-timing.md)
+; target_fps  - rewrites the hardcoded 60.0 frame-rate constant (RVA 0x30ce38)
+;               at load time. 144 gives ~143 fps AND 2.4x game speed, because
+;               the engine advances one logic tick per frame.
+
+title=東方紅魔郷: New Classic  [MODDED]
+frame_scale=1.0
+target_fps=60

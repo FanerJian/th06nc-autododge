@@ -1,0 +1,157 @@
+{
+  "_readme": [
+    "按游戏构建（th06nc.exe 的 MD5）索引的内存地址表，由 addr.py 在 import 时套用。",
+    "为什么要有它：offsets.py 把地址写死在源码里，游戏一更新全失效；实测多次更新证明",
+    "结构偏移 / 池 stride / 槽数从来没变，变的只是全局变量位置，所以地址可以外置。",
+    "confidence 取值：verified=运行时读值验证过；static=反汇编特征唯一命中；",
+    "derived=由已验证地址按固定的结构内偏移派生；unverified=有候选但尚未运行时确认。",
+    "禁止手改本文件里的 rva 去\"试\"；要重新定位就跑 py tools\\autofix.py。"
+  ],
+  "fe47d9c26828e4671a2d2e4bf00af5a4": {
+    "game": "th06nc.exe",
+    "exe_size": 5857792,
+    "exe_mtime": "2026-09-24 17:31:04",
+    "resolved_at": "2026-09-24",
+    "resolved_by": "tools/autofix.py（位移分档 + 反汇编指纹）",
+    "shift_bands": [
+      {
+        "shift": "0x4C220",
+        "weight": 10
+      },
+      {
+        "shift": "0x43260",
+        "weight": 3
+      },
+      {
+        "shift": "0x4C228",
+        "weight": 1
+      },
+      {
+        "shift": "0x4AC50",
+        "weight": 1
+      }
+    ],
+    "entries": {
+      "BM_RVA": {
+        "rva": "0x00436EF0",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": "派生自 lasers[0] 0x0052BF08 − 0xF5018（锚点 1 个）"
+      },
+      "BOMBS": {
+        "rva": "0x00549D41",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），20 处引用"
+      },
+      "CALC_COUNT": {
+        "rva": "0x00C6DE20",
+        "shift": "0x4C220",
+        "confidence": "verified",
+        "how": "运行时速率确认：0x00C6DE20 以 60/秒 增长（60fps 下应约 60）"
+      },
+      "CUR_STATE": {
+        "rva": "0x00C6DFBC",
+        "shift": "0x4C220",
+        "confidence": "verified",
+        "how": "状态变量指纹（被赋不同场景号 ∪ switch 分派），47 处引用"
+      },
+      "DEATHS": {
+        "rva": "0x0053CAB0",
+        "shift": "0x4AC50",
+        "confidence": "static",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），23 处引用"
+      },
+      "DYING": {
+        "rva": "0x0053D401",
+        "shift": "0x4AC50",
+        "confidence": "static",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），11 处引用"
+      },
+      "EM_RVA": {
+        "rva": "0x00AEE0B0",
+        "shift": "0x4C220",
+        "confidence": "verified",
+        "how": "运行时占用槽确认：0x00AEE0B0（位移 +0x4c220）实读占用槽 1 个；锚点原本给 0x00AEE0B8"
+      },
+      "GUI": {
+        "rva": "0x00ABAE28",
+        "shift": "0x4C220",
+        "confidence": "verified",
+        "how": "位移 +0x4c220 命中（该档位权重最高），47 处引用"
+      },
+      "IM_RVA": {
+        "rva": "0x00BFB2F8",
+        "shift": "0x4C220",
+        "confidence": "static",
+        "how": "道具池 imul rbx,rcx,0x160（槽内有 state +0x0C）（锚点 10 个）"
+      },
+      "INPUT": {
+        "rva": "0x00ABAE80",
+        "shift": "0x4C220",
+        "confidence": "static",
+        "how": "位移 +0x4c220 命中（该档位权重最高），82 处引用"
+      },
+      "ITEM_NEXT_IDX": {
+        "rva": "0x00C53458",
+        "shift": "0x4C220",
+        "confidence": "static",
+        "how": "位移 +0x4c220 命中（该档位权重最高），39 处引用"
+      },
+      "LIVES": {
+        "rva": "0x00549D40",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），23 处引用"
+      },
+      "NATIVE_TIME": {
+        "rva": "0x0053D409",
+        "shift": "0x4AC50",
+        "confidence": "static",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），7 处引用"
+      },
+      "PLAYER_BASE": {
+        "rva": "0x00549FF0",
+        "shift": "0x4AC50",
+        "confidence": "derived",
+        "how": ""
+      },
+      "PLAYER_HITBOX": {
+        "rva": "0x0055173C",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": ""
+      },
+      "PLAYER_X": {
+        "rva": "0x00551720",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": "运行时判定半径确认：0x00551720（位移 +0x4ac50）判定半径实读 1.2500 ≈ 1.25；位移档原本给 0x00549D30"
+      },
+      "PLAYER_Y": {
+        "rva": "0x00551724",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": ""
+      },
+      "POWER": {
+        "rva": "0x0053CAD8",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），35 处引用"
+      },
+      "RETRY": {
+        "rva": "0x00549D42",
+        "shift": "0x4AC50",
+        "confidence": "verified",
+        "how": "位移 +0x4ac50 命中（该档位权重最高），3 处引用"
+      },
+      "WANT_STATE": {
+        "rva": "0x00C6DFB8",
+        "shift": "0x4C220",
+        "confidence": "derived",
+        "how": ""
+      }
+    }
+  }
+}

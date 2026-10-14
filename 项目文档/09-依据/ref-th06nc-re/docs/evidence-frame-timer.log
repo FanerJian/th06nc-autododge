@@ -1,0 +1,25 @@
+# Real th06nc_vcmod.log excerpts (trimmed, from the Steam/Proton 144 Hz machine)
+# Three runs: baseline 60, slice probe (frame_scale=0.4167), constant patch (target_fps=144).
+
+# --- run A: frame_scale=1.0 (baseline) --------------------------------------
+CreateWaitableTimerExW flags=0x2 (high-res=1)
+frame timer: 1 waits/sec, last wait 0.950 ms, period=0
+frame timer: 917 waits/sec, last wait 0.950 ms, period=0
+frame timer: 924 waits/sec, last wait 0.950 ms, period=0
+frame timer: 918 waits/sec, last wait 0.950 ms, period=0
+# -> 60 fps in the in-game counter
+
+# --- run B: frame_scale=0.4167 (slice probe) --------------------------------
+frame timer: 2073 waits/sec, last wait 0.950 ms, period=0, scale=0.4167
+WaitForSingleObject: 2074/sec, last timeout=4294967295
+frame timer: 2066 waits/sec, last wait 0.950 ms, period=0, scale=0.4167
+WaitForSingleObject: 2066/sec, last timeout=4294967295
+# -> slices got shorter (915 -> 2066/sec, ratio ~0.44 = requested 0.4167)
+# -> frame rate UNCHANGED at 60: the wait is inside a deadline loop
+
+# --- run C: target_fps=144 (constant patch) ---------------------------------
+config: title set, frame_scale=1.0000, target_fps=144.0
+frame-rate constant at 000000014030CE38 = 60.0000 (want 144.0)
+patched frame-rate constant: 60.0000 -> 144.0000
+# -> in-game counter ~143 fps, and the game runs ~2.4x fast
+# -> physics is coupled to the frame counter (fixed-60-tick engine)

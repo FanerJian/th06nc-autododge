@@ -1,0 +1,16 @@
+LIBRARY vcruntime140
+EXPORTS
+    memset=proxy_memset
+    memcpy=proxy_memcpy
+    memmove=proxy_memmove
+    memcmp=proxy_memcmp
+    strchr=proxy_strchr
+    strrchr=proxy_strrchr
+    _purecall=proxy_purecall
+    __std_terminate=proxy_std_terminate
+    _CxxThrowException=proxy_CxxThrowException
+    __C_specific_handler=proxy_C_specific_handler
+    __current_exception=proxy_current_exception
+    __current_exception_context=proxy_current_exception_context
+    __std_exception_copy=proxy_std_exception_copy
+    __std_exception_destroy=proxy_std_exception_destroy
