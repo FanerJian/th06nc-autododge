@@ -167,7 +167,7 @@ def main():
         seconds = float(sys.argv[sys.argv.index('--seconds') + 1])
     w = HumanWatch()
     if not w.start():
-        print(f'✗ 钩子安装失败（err={w.error}）—— 让位功能不可用')
+        print(f'失败 钩子安装失败（err={w.error}）—— 让位功能不可用')
         return 1
     print(f'已装键盘钩子，观察 {seconds:.0f} 秒。')
     print('请按键（方向 / Z / X …）。')
@@ -183,15 +183,15 @@ def main():
     inj = w.injected_count()
     bad = False
     if inj == 0:
-        print('✗ 钩子一个键盘事件都没收到（连脚本自己发的都没收到）—— 钩子没在工作，'
+        print('失败 钩子一个键盘事件都没收到（连脚本自己发的都没收到）—— 钩子没在工作，'
               '让位永远不会触发')
         bad = True
     elif n1 != n0:
-        print(f'✗ 注入测试失败：脚本自己发的键被算成了「人按的」（{n0} → {n1}）'
+        print(f'失败 注入测试失败：脚本自己发的键被算成了「人按的」（{n0} → {n1}）'
               '—— 让位会被自己触发，必须修')
         bad = True
     else:
-        print(f'✓ 钩子在工作（收到 {inj} 个注入事件、0 个真实按键）：'
+        print(f'通过 钩子在工作（收到 {inj} 个注入事件、0 个真实按键）：'
               '脚本自己发的键不会被算成「人按的」')
     t0 = time.perf_counter()
     last = n1
@@ -208,7 +208,7 @@ def main():
         print('（观察期内没读到真实按键 —— 钩子链路已由上面的注入事件证明；'
               '若你刚才确实按了键，那就是没读到，让位会失效）')
     else:
-        print(f'✓ 钩子收到了 {n - n1} 次真实按键，让位可用')
+        print(f'通过 钩子收到了 {n - n1} 次真实按键，让位可用')
     w.stop()
     return 1 if bad else 0
 

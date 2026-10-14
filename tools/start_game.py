@@ -30,16 +30,16 @@ def main():
     mb = module_base(pid, 'th06nc.exe')[0]
     st = read_state(p, mb)
     code, desc, ok = screen_of(st)
-    print(f'PID {pid}  基址 0x{mb:X}')
-    print(f'当前画面：{code} —— {desc}')
+    print(f'PID {pid}，基址 0x{mb:X}。')
+    print(f'当前画面：{code}，{desc}。')
     print(f'  curState={st["cur_state"]} Lives={st["lives"]} Bombs={st["bombs"]} '
           f'0x4FF0F2={st["retry"]} deaths={st["deaths"]}')
 
     if code == 'IN_GAME':
-        print('✓ 已在关卡中，无需操作')
+        print('已在关卡中，无需操作。')
     elif code == 'CONTINUE':
         if not args.resume:
-            print('✗ 停在 Continue 画面。要按 Z 续关请显式加 --resume。')
+            print('停在 Continue 画面。如需按 Z 续关，请显式加 --resume。')
         else:
             hwnd = find_windows(pid=pid)[0][0]
             set_foreground(hwnd)
@@ -47,10 +47,10 @@ def main():
             th06.tap('z', 60)
             time.sleep(1.2)
             c2, d2, _ = screen_of(read_state(p, mb))
-            print(f'  续关后：{c2} —— {d2}  Lives={read_lives(p, mb)}')
+            print(f'  续关后：{c2}，{d2}，Lives={read_lives(p, mb)}。')
     else:
-        print('✗ 当前不在关卡中，且菜单内部分屏无法区分 —— 不发送任何按键。')
-        print('   请手动点到关卡，或先补上菜单判据（见 MEMMAP §8）。')
+        print('当前不在关卡中，且菜单内部分屏无法区分，不发送任何按键。')
+        print('   请手动进入关卡，或先补上菜单判据（见 MEMMAP §8）。')
     p.close()
 
 

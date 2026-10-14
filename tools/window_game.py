@@ -70,7 +70,7 @@ def main():
         time.sleep(0.4)
         fg = user32.GetForegroundWindow()
         print(f'set_foreground={r}  前台现在 hwnd=0x{fg:X} '
-              f'{"= 游戏 ✓" if fg == hwnd else "≠ 游戏 ✗"}')
+              f'{"= 游戏 通过" if fg == hwnd else "≠ 游戏 失败"}')
 
 
 if __name__ == '__main__':

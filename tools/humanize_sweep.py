@@ -109,7 +109,7 @@ for react in REACTS:
                  if kind == 'C' else
                  f'({r["px"]:5.1f},{r["py"]:5.1f})'
                  if kind == 'D' else
-                 f'道具拾取 {"✓" if r["picked"] else "✗"}  末 x={r["px"]:5.1f}')
+                 f'道具拾取 {"通过" if r["picked"] else "失败"}  末 x={r["px"]:5.1f}')
         print(f'{react:5.0f} {note:<5}{r["waits"]:7d}{r["waits"] / r["frames"] * 100:6.0f}%'
               f'{r["switches"]:5d}{r["min_gap"]:9.1f}'
               f'{("第" + str(r["hit"]) + "帧") if r["hit"] is not None else "—":>7}  {extra}')

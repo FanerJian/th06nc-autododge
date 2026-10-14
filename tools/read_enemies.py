@@ -80,7 +80,7 @@ def main():
             if f3[i] & E_INVISIBLE:
                 tag.append('隐形')
             if cds[i] >= 0:
-                tag.append(f'★{cds[i]}帧后发弹')
+                tag.append(f'{cds[i]}帧后发弹')
             d = ((xs[i] - px) ** 2 + (ys[i] - py) ** 2) ** 0.5
             print(f'    slot {slots[i]:3d}  ({xs[i]:8.2f},{ys[i]:8.2f})  life={lifes[i]:6d} '
                   f'hitbox=({hbws[i]:.2f},{hbhs[i]:.2f})  距自机 {d:6.1f}  {" ".join(tag)}')

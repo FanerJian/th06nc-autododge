@@ -44,11 +44,11 @@ def main():
     print(f'offsets.py 定义 {len(addrs)} 个地址 / 结构常量 '
           f'（0x{addrs[0]:X} .. 0x{addrs[-1]:X}）')
     if hits:
-        print(f'\n✗ 裸地址残留 {len(hits)} 处 —— 改成 from offsets import：')
+        print(f'\n失败 裸地址残留 {len(hits)} 处 —— 改成 from offsets import：')
         for h in hits:
             print(f'  {h}')
         return 1
-    print('✓ 活跃代码没有裸地址，全部来自 offsets.py')
+    print('通过 活跃代码没有裸地址，全部来自 offsets.py')
     return 0
 
 

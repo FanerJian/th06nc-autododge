@@ -321,7 +321,7 @@ def show_predictions(idx, pdata_shift):
         pred = old + pdata_shift
         n = len(idx.get(pred, []))
         n_ok += 1 if n else 0
-        verdict = '✓ 被引用' if n else '✗ 无人引用 —— 外推值可疑'
+        verdict = '通过 被引用' if n else '失败 无人引用 —— 外推值可疑'
         print(f'    {name:<18} 0x{old:08X} 0x{pred:08X} {n:>6}   {verdict}')
     print(f'\n    {n_ok}/{len(PREDICT_TARGETS)} 个预测地址在代码里被引用')
     print('    （引用数 0 的那几项说明 +0x4C224 对它们不成立，要单独找特征）\n')
@@ -439,7 +439,7 @@ def generate_offsets(results, src_path, out_path):
                 n += 1
     open(out_path, 'w', encoding='utf-8').write(text)
     print(f'\n    改了 {n} 处 → {out_path}')
-    print('    ⚠ 这些都是**静态候选**：先用 verify_offsets.py 开游戏确认，再覆盖 offsets.py。')
+    print('    注意：这些都是**静态候选**：先用 verify_offsets.py 开游戏确认，再覆盖 offsets.py。')
 
 
 def main():
@@ -522,7 +522,7 @@ def main():
         anchors = find_anchors(md, code, text['vaddr'], kind, imm)
         print(f'    锚点命中 {len(anchors)} 处')
         if not anchors:
-            print('    ✗ 锚点未命中 —— 该特征在新构建里不成立，需人工核对 MEMMAP\n')
+            print('    失败 锚点未命中 —— 该特征在新构建里不成立，需人工核对 MEMMAP\n')
             continue
         # 只在「锚点邻域确实访问了槽内字段」的位置采纳候选 —— 那才是池遍历代码，
         # 不加这道门就会把 4 个目标全指向同一个热门全局（实测 0xBFB2F8）。
@@ -554,7 +554,7 @@ def main():
         else:
             print(f'    锚点全部采纳（无槽内字段条件）：{n_pool} 处')
         if not score:
-            print('    ✗ 没有锚点同时满足「步长 + 槽内字段」—— 特征需人工核对 MEMMAP\n')
+            print('    失败 没有锚点同时满足「步长 + 槽内字段」—— 特征需人工核对 MEMMAP\n')
             continue
         ranked = sorted(score.items(), key=lambda kv: (-kv[1][1], -kv[1][0],
                                                        abs(kv[0] - feat['old'])))
@@ -562,14 +562,14 @@ def main():
               f'{"偏离参考":>10}')
         for tgt, sc_v in ranked[:6]:
             cnt, wok = sc_v[0], sc_v[1]
-            mark = ' ★' if tgt == ranked[0][0] else ''
+            mark = ' ' if tgt == ranked[0][0] else ''
             shift = tgt - feat['old']
             dev = shift - SHIFT_REF
-            flag = '' if abs(dev) <= SHIFT_TOL else '  ✗位移异常'
+            flag = '' if abs(dev) <= SHIFT_TOL else '  失败位移异常'
             # 独立证据：按 .data 增长量外推，与特征候选对比
             predict = feat['old'] + pdata_shift
             gap = abs(tgt - predict)
-            pmark = f'  外推差 {gap:>5}' + (' ✓' if gap <= 0x400 else '')
+            pmark = f'  外推差 {gap:>5}' + (' 通过' if gap <= 0x400 else '')
             print(f'      0x{tgt:08X} {cnt:>8} {wok:>9} {shift:>+#10x} '
                   f'{pmark}{flag}{mark}')
         # 采纳「位移正常」的最高分候选（避开热门全局的误命中）
@@ -605,10 +605,10 @@ def main():
                       f'{d["delta"]:+#x} → 0x{expect:08X}   （未独立定位，直接采用）')
                 results[d['name']] = expect
             elif got == expect:
-                print(f'  {d["name"]:<26} 独立 0x{got:08X} = 派生 0x{expect:08X}  ✓ 一致')
+                print(f'  {d["name"]:<26} 独立 0x{got:08X} = 派生 0x{expect:08X}  通过 一致')
             else:
                 print(f'  {d["name"]:<26} 独立 0x{got:08X} ≠ 派生 0x{expect:08X}  '
-                      f'✗ 至少一个误命中（依据：{d["why"]}）')
+                      f'失败 至少一个误命中（依据：{d["why"]}）')
         print()
 
     # ---- 锚点函数汇总：这些函数起点就是 offsets.py 里 FN_* 的新值 ----

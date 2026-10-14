@@ -2184,89 +2184,86 @@ def main():
     # 默认值一律取自 default_params()（出厂默认的唯一真源）—— 控制台保存的值不作用于命令行，
     # 命令行的默认值必须始终可预期：`--help` 显示什么，不传参就跑什么。
     d = default_params()
-    ap = argparse.ArgumentParser()
-    ap.add_argument('--dry', action='store_true', help='只决策不按键')
-    ap.add_argument('--frames', type=int, default=0, help='运行帧数，0=无限')
-    ap.add_argument('--horizon', type=int, default=int(d['horizon']), help='预测帧数')
+    ap = argparse.ArgumentParser(
+        description='th06nc 外部自动避弹。参数含义与调节后果见 '
+                    '项目文档/04-调参/相关-参数速查-TUNING.md。')
+    ap.add_argument('--dry', action='store_true', help='只决策，不发送按键')
+    ap.add_argument('--frames', type=int, default=0, help='运行帧数，0 为不限')
+    ap.add_argument('--horizon', type=int, default=int(d['horizon']), help='弹道外推帧数')
     ap.add_argument('--speed', type=float, default=d['speed'],
-                    help='自机速度 px/帧；先用 tools\\calib_speed.py 标定再改')
+                    help='自机速度 px/帧，须先以 tools\\calib_speed.py 标定')
     ap.add_argument('--safe', type=float, default=d['safe'], help='额外安全裕度 px')
-    ap.add_argument('--inertia', type=float, default=d['inertia'], help='同向奖励，抑制抖动')
+    ap.add_argument('--inertia', type=float, default=d['inertia'], help='同向惯性奖励')
     ap.add_argument('--edge', type=float, default=d['edge'],
-                    help='贴边惩罚权重：离边界 60px 内才扣分，场地中部自由')
+                    help='贴边惩罚权重，离边界 60px 内生效')
     ap.add_argument('--comfort', type=float, default=d['comfort'],
-                    help='安全分数线(px)：有方向间隙达到它，才让贴边/惯性/进攻参与排序')
-    ap.add_argument('--period', type=float, default=1.0 / 60.0, help='循环周期(秒)')
+                    help='安全分数线 px，达标才让软项参与排序')
+    ap.add_argument('--period', type=float, default=1.0 / 60.0, help='循环周期（秒）')
     ap.add_argument('--verbose', action='store_true')
     ap.add_argument('--no-unpause', action='store_true', default=not d['unpause'],
-                    help='开始前不按 Z（默认按一次：暂停菜单里是解除暂停，游戏中只是射击，无害）')
+                    help='开始前不按 Z')
     ap.add_argument('--no-restore', action='store_true', help='结束时不恢复原前台窗口')
     ap.add_argument('--no-enemy', action='store_true', default=not d['use_enemy'],
-                    help='不纳入敌人本体（只躲子弹/激光）')
+                    help='不纳入敌人本体')
     ap.add_argument('--no-laser', action='store_true', default=not d['use_laser'],
                     help='不纳入激光')
     ap.add_argument('--no-autofire', action='store_true', default=not d['autofire'],
-                    help='不自动射击（默认按住 Z 连射）')
+                    help='不自动射击')
     ap.add_argument('--no-item', action='store_true', default=not d['use_item'],
-                    help='不捡掉落道具（默认会去捡 P 点/蓝点等）')
+                    help='不捡掉落道具')
     ap.add_argument('--item', type=float, default=d['item'],
-                    help='道具吸引权重，0 = 不捡；越大越主动朝掉落物靠')
+                    help='道具吸引权重，0 为不捡')
     ap.add_argument('--item-wait', type=float, default=d['item_wait'],
-                    help='愿意为道具等的帧数：道具还要更久才落到自机高度就不追（不干等）')
+                    help='愿为道具等待的帧数')
     ap.add_argument('--no-poc', action='store_true', default=not d['poc'],
-                    help='不冲收集线（默认开：满火力且可转化掉落价值足够时冲上 y<128 全屏吸道具）')
+                    help='不冲收集线')
     ap.add_argument('--poc-min', type=float, default=d['poc_min'],
-                    help='冲线触发价值：场上普通掉落总价值 ≥ 它才值得冲（约 4 小P；'
-                         '0 = 满火力且有普通掉落就冲）')
+                    help='道具线触发价值，0 为满足条件即冲')
     ap.add_argument('--risk', type=float, default=d['risk'],
-                    help='紧张档同等安全容差(px)：最优方向间隙 < 分数线时，只在与它相差 ≤ 此值'
-                         '的方向间让软项决胜负（0 = 退回纯躲）')
+                    help='紧张档同等安全容差 px，0 为只躲不打')
     ap.add_argument('--warn', type=float, default=d['warn'],
-                    help='弹幕预警窗口(帧)：敌人还有这么多帧就发弹时提前扩大其危险半径；0 = 关闭')
+                    help='弹幕预警窗口（帧），0 为关闭')
     ap.add_argument('--warn-dist', type=float, default=d['warn_dist'],
-                    help='预警最大额外危险半径(px)：发弹瞬间要躲开多远')
+                    help='预警附加的危险半径 px')
     ap.add_argument('--attack', type=float, default=d['attack'],
-                    help='进攻吸引权重，0 = 不追敌人；越大越主动往目标靠')
+                    help='进攻吸引权重，0 为不追')
     ap.add_argument('--standoff', type=float, default=d['standoff'],
-                    help='输出带下沿：停在目标下方 standoff..standoff+ATTACK_REACH px，0 = 贴近敌人')
+                    help='输出带下沿 px，0 为贴近敌人')
     ap.add_argument('--margin', type=float, default=d['margin'],
-                    help='安全余量权重：候选池内间隙越大越优先，0 = 关闭（治贴敌人）')
+                    help='安全余量权重')
     ap.add_argument('--clear', type=float, default=d['clear'],
-                    help='空旷区吸引权重：同等安全时优先退向弹少的一带，0 = 关闭（治逐帧钻缝）')
+                    help='空旷区吸引权重')
     ap.add_argument('--clear-r', type=float, default=d['clear_r'],
-                    help='空旷度评价半径(px)：落点周围这么大范围里的弹密度')
+                    help='空旷度评价半径 px')
     ap.add_argument('--center', type=float, default=d['center'],
-                    help='自动回中权重：离场地中心超出自由半径就往回拉，0 = 关闭（治角落恋战）')
+                    help='自动回中权重')
     ap.add_argument('--center-r', type=float, default=d['center_r'],
-                    help='回中自由半径(px)：离中心这么近完全不干预，软项自由发挥')
+                    help='回中自由半径 px')
     ap.add_argument('--switch', type=float, default=d['switch'],
-                    help='方向切换门槛：新方向优势不足此值就维持原方向（治抖动）')
+                    help='方向切换门槛')
     ap.add_argument('--react', type=float, default=d['react'],
-                    help='安全时的反应延迟(帧)：局面宽裕才慢半拍再动，危险时零延迟；0 = 关闭')
+                    help='安全时反应延迟（帧），0 为关闭')
     ap.add_argument('--no-bomb', action='store_true', default=not d['bomb'],
-                    help='不自动灵击（默认开：被击中时抢在掉命前按 X，九向必死时提前炸）')
+                    help='不自动灵击')
     ap.add_argument('--bomb-pre', type=float, default=d['bomb_pre'],
-                    help='必死预判前瞻(帧)：九向外推这么多帧全部重叠就提前炸；0 = 只做死亡炸弹抢救')
+                    help='必死预判前瞻（帧），0 为只做死亡炸弹')
     ap.add_argument('--no-advance', action='store_true', default=not d['advance'],
-                    help='不自动进下一关（默认开：关卡过渡不退出，开场对话自动轻点 Z 推进）')
+                    help='不自动进下一关')
     ap.add_argument('--no-yield', action='store_true', default=not d['human_yield'],
-                    help='玩家按键时不让位（默认开：检测到真人按键就停手，人停手后再接管）')
+                    help='玩家按键时不让位')
     ap.add_argument('--human-idle', type=float, default=d['human_idle'],
-                    help='玩家最后一次按键后，脚本再静默多少秒才接管回来')
+                    help='玩家停手后静默多少秒才接管')
     ap.add_argument('--no-focus', action='store_true', default=not d['focus'],
-                    help='不用低速模式（开着时：慢着走也宽裕就按住 Shift 半速走，紧起来回高速）')
+                    help='不用低速模式')
     ap.add_argument('--focus-slack', type=float, default=d['focus_slack'],
-                    help='低速门槛余量(px)：最优间隙 ≥ 安全分数线 + 它才敢切低速；调大 = 更少低速')
+                    help='低速门槛余量 px')
     ap.add_argument('--blackbox', action='store_true', default=d['blackbox'],
-                    help='死亡黑匣子：掉命时把前 4 秒完整现场落盘（复用主循环的读取，'
-                         '不额外抢带宽），事后用 tools\\death_report.py 解剖')
+                    help='死亡黑匣子：掉命时保存现场')
     ap.add_argument('--stop-on-death', action='store_true',
                     default=not d['keep_going_on_death'],
-                    help='掉命就松键退出（默认：掉命继续跑，含掉到残机 0 那次；'
-                         '真进 Continue 画面无论如何都会停手）')
+                    help='掉命即松开按键退出')
     ap.add_argument('--resume', action='store_true',
-                    help='失败菜单（Continue / 符卡练习 Failed）里自动按 Z 继续：'
-                         '符卡练习下等于「重试」，普通关卡下等于「续关」')
+                    help='失败菜单里自动按 Z 继续（符卡练习为重试，普通关卡为续关）')
     args = ap.parse_args()
 
     p, pid = th06.get_proc()

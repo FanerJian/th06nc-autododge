@@ -153,7 +153,7 @@ def main():
             return 0 if hits else 2
 
         if time.time() > deadline:
-            print(f'✗ 等了 {args.seconds:.0f}s 没抓到活跃激光（画面 {code}）。')
+            print(f'失败 等了 {args.seconds:.0f}s 没抓到活跃激光（画面 {code}）。')
             print('  激光主要在 Stage 4/5/6；确认已经在关卡里，再用 --now 看一次基线。')
             p.close()
             return 2

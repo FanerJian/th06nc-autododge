@@ -177,7 +177,7 @@ def main():
             # 进入判定圈：游戏下一帧才判死，这一帧就是"谁碰上了"的答案
             if idx.size and not np.isin(idx, last_hit).all():
                 hits += 1
-                out(f'[{el:7.2f}s] ★ 命中判定圈  #{hits}  自机({px:.1f},{py:.1f}) '
+                out(f'[{el:7.2f}s] 命中判定圈  #{hits}  自机({px:.1f},{py:.1f}) '
                     f'判定半径 {PLAYER_R}px')
                 for i in idx[np.argsort(dist[idx])][:4]:
                     over = dist[i] - (bf.brs[i] + PLAYER_R)
@@ -189,7 +189,7 @@ def main():
 
             if dead and not was_dead:
                 deaths += 1
-                out(f'[{el:7.2f}s] ★★ 自机死亡  #{deaths}  ({px:.1f},{py:.1f})  '
+                out(f'[{el:7.2f}s] 自机死亡  #{deaths}  ({px:.1f},{py:.1f})  '
                     f'Lives={st["lives"]} deaths={st["deaths"]}')
                 near = np.argsort(dist)[:4] if idx.size else \
                     np.argsort(np.hypot(bf.xs - px, bf.ys - py))[:4]

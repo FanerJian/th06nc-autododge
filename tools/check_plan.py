@@ -67,7 +67,7 @@ def old_pick(px, py, scores, center_w, inertia, prev, speed, horizon):
 
 def check(tag, best, sc, cond, detail=''):
     global OK
-    mark = '✓' if cond else '✗'
+    mark = '通过' if cond else '失败'
     print(f'{mark} {tag}: 选 {best}  gap={sc[best]:+.2f}  {detail}')
     if not cond:
         OK = False
@@ -75,7 +75,7 @@ def check(tag, best, sc, cond, detail=''):
 
 def check_val(tag, got, want, detail=''):
     global OK
-    mark = '✓' if got == want else '✗'
+    mark = '通过' if got == want else '失败'
     print(f'{mark} {tag}: 得到 {got}  期望 {want}  {detail}')
     if got != want:
         OK = False
@@ -148,7 +148,7 @@ _ideal = attack_cost(192.0, _ty + _so, 192.0, _ty, _so)
 _above = attack_cost(192.0, _ty - 80.0, 192.0, _ty, _so)
 _far = attack_cost(192.0, _ty + _so + ATTACK_REACH + 80.0, 192.0, _ty, _so)
 check_val('过冲受罚·理想点代价最小', round(_ideal, 3), 0.0, '（水平对齐 + 垂直到位 = 0）')
-print(f'{"✓" if _above > _ideal and _far > _ideal else "✗"} 过冲受罚·头顶与带外同罚: '
+print(f'{"通过" if _above > _ideal and _far > _ideal else "失败"} 过冲受罚·头顶与带外同罚: '
       f'头顶 {_above:.3f} / 带外 {_far:.3f} 都 > 理想 {_ideal:.3f}'
       f'{"  ← 旧式此处全为 0" if _above > 0 else ""}')
 OK = OK and _above > _ideal and _far > _ideal
@@ -165,7 +165,7 @@ check('输出带内不驱动上行', best, sc, best in ('none', 'down'),
 # 用例 10：贴边项只在贴边时非零。旧式全局中心吸引会与进攻项全场对抗，
 # 把自机钉在原地（实测水平偏差 53px 打不到目标）。
 check_val('贴边项·场地中部为 0', edge_cost(192.0, 224.0), 0.0)
-print(f'{"✓" if edge_cost(8.0, 224.0) > 0 and edge_cost(192.0, 224.0) == 0.0 else "✗"} '
+print(f'{"通过" if edge_cost(8.0, 224.0) > 0 and edge_cost(192.0, 224.0) == 0.0 else "失败"} '
       f'贴边项·贴边才扣分: 贴左边 {edge_cost(8.0, 224.0):.3f} / 中部 {edge_cost(192.0, 224.0):.3f}')
 OK = OK and edge_cost(8.0, 224.0) > 0 and edge_cost(192.0, 224.0) == 0.0
 
@@ -329,7 +329,7 @@ _g_off = plan(*_args, edge_w=0.0, prev='none', inertia=0.0, enemy=_en18,
               comfort=6.0, attack_w=0.0)[1]['none']
 _g_on = plan(*_args, edge_w=0.0, prev='none', inertia=0.0, enemy=_en18, comfort=6.0,
              attack_w=0.0, warn=np.array([3]), warn_w=20.0, warn_dist=WARN_DIST)[1]['none']
-print(f'{"✓" if _g_on < _g_off else "✗"} 预警压低安全分: 不预警 {_g_off:.1f}px → '
+print(f'{"通过" if _g_on < _g_off else "失败"} 预警压低安全分: 不预警 {_g_off:.1f}px → '
       f'预警后 {_g_on:.1f}px（敌人 3 帧后发弹）')
 OK = OK and _g_on < _g_off
 

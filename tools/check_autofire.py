@@ -52,7 +52,7 @@ class FakeWatch:
 
 def check(tag, cond, detail=''):
     global OK
-    print(f'{"✓" if cond else "✗"} {tag}  {detail}')
+    print(f'{"通过" if cond else "失败"} {tag}  {detail}')
     OK = OK and cond
 
 

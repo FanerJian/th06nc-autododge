@@ -452,14 +452,14 @@ def report(d, back=60, scan=60, horizon=None, safe=None, speed=None,
         out('    凭空消失，直接扫当帧永远只会说「没相交」。')
     elif inferred:
         out('【一】真凶（几何真值层；严格判定无相交，按最小余量推定）')
-        out(f'  ★ 最接近的一刻 = 第 {near_t} 帧，净余量 **{near_g:+.2f}px** ——'
+        out(f'  最接近的一刻 = 第 {near_t} 帧，净余量 **{near_g:+.2f}px** ——'
             f' 差这一点就进判定圈')
         out(f'    该量级落在判定常数误差内，按它算；要更严 `--tol 0`，'
             f'要更松 `--tol {near_g + 0.5:.1f}`。')
     else:
         out(f'【一】真凶（几何真值层：用游戏自己的碰撞判定扫全部帧，容差 {tol:g}px）')
     if t_hit is None:
-        out(f'  ✗ 没有一帧相交，也没有任何威胁接近到 {auto_near:g}px 以内 ——')
+        out(f'  失败 没有一帧相交，也没有任何威胁接近到 {auto_near:g}px 以内 ——')
         out('    致死威胁不在「弹 / 激光 / 敌人」这三类里，或发生在前 %d 帧之外'
             '（加大 --pre 重录）。' % m.get('pre', 0))
         out('    这一条本身就是结论：两边用的是同一套几何，谁都没找到凶手 → '
@@ -475,7 +475,7 @@ def report(d, back=60, scan=60, horizon=None, safe=None, speed=None,
             out(f'  ! 判定与死亡信号差了 {t_death - t_hit} 帧（正常应 ≈8 帧 = respawnTimer）'
                 f' —— 缓冲里可能混了不止一次事件，或中途漏帧')
         out(f'  自机 ({d.px[t_hit]:.1f},{d.py[t_hit]:.1f})  '
-            f'{"⇩低速" if d.focus[t_hit] == 1 else "高速"}  '
+            f'{"低速" if d.focus[t_hit] == 1 else "高速"}  '
             f'按键 {keys_of(d.key[t_hit])}')
     # 缓冲是否跨了场景重载（符卡重开 / 加载）：后半段其实是另一个场景，
     # 拿它算「当时有没有活路」会把两个场景混在一起。
@@ -493,7 +493,7 @@ def report(d, back=60, scan=60, horizon=None, safe=None, speed=None,
         t_hit = d.T - 1
     for kind, i, gap, p in hits[:4]:
         cn = {'bullet': '子弹', 'laser': '激光', 'enemy': '敌人'}[kind]
-        out(f'  ★ 真凶 = {cn}  槽 {int(p["slot"])}   侵入判定 {gap:+.2f}px（负 = 已进圈）')
+        out(f'  真凶 = {cn}  槽 {int(p["slot"])}   侵入判定 {gap:+.2f}px（负 = 已进圈）')
         if kind == 'bullet':
             out(f'      pos=({p["x"]:.2f},{p["y"]:.2f})  v=({p["vx"]:.2f},{p["vy"]:.2f})  '
                 f'r={p["r"]:.2f}  |v|={p["spd"]:.2f}  角度={np.degrees(p["ang"]):.1f}°  '
@@ -543,7 +543,7 @@ def report(d, back=60, scan=60, horizon=None, safe=None, speed=None,
                 if len(j):
                     e0 = int(pp['exf'][int(j[0])])
                     if e0 & 0x1C0:
-                        out('  ⚠ 真凶带**定时转向位**：脚本若只按当前速度外推，'
+                        out('  注意：真凶带**定时转向位**：脚本若只按当前速度外推，'
                             '转向那一刻整段落点作废。')
 
     # ---- 脚本视角 ----
@@ -595,7 +595,7 @@ def report(d, back=60, scan=60, horizon=None, safe=None, speed=None,
     out('  世界取记录的真实轨迹 + 假设自机走位；含瞄准弹时结论偏乐观（弹会改道跟人）')
     n_aim = int(np.sum((d.b_exf.astype(np.int32) & 0x80) != 0))
     if n_aim:
-        out(f'  ⚠ 本段出现 {n_aim} 个「朝自机转向」弹样本 —— 按乐观读')
+        out(f'  注意：本段出现 {n_aim} 个「朝自机转向」弹样本 —— 按乐观读')
     i1 = min(d.T - 1, t_hit + 10)
     lo = max(0, t_hit - scan)
     best_i0 = None
@@ -605,7 +605,7 @@ def report(d, back=60, scan=60, horizon=None, safe=None, speed=None,
             best_i0 = (i0, al)
             break
     if best_i0 is None:
-        out(f'  ✗ 判定帧前这 {t_hit - lo} 帧里，任何一帧起步走任何方向都活不到判死 —— '
+        out(f'  失败 判定帧前这 {t_hit - lo} 帧里，任何一帧起步走任何方向都活不到判死 —— '
             f'**必死局面**（脚本无责）')
     else:
         i0, al = best_i0
@@ -725,7 +725,7 @@ def self_test(out=print):
             f'（须前者真、后者假）')
     os.unlink(path)
     out('')
-    out(f'### 自测结果：{"通过 ✓" if ok else "失败 ✗"}')
+    out(f'### 自测结果：{"通过 通过" if ok else "失败 失败"}')
     return 0 if ok else 1
 
 

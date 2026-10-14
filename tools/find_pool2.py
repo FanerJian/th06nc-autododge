@@ -86,7 +86,7 @@ def main():
              & (x >= 3) & (x <= 381) & (y >= 3) & (y <= 445))
         idx = np.nonzero(m)[0]
         slot0 = base + r * 4 - XOFF_F * 4
-        print(f'\n★ 槽基址 = 0x{slot0:X}   (RVA 0x{slot0 - (base & ~0xFFFFFFFFFFFFF):X})')
+        print(f'\n槽基址 = 0x{slot0:X}   (RVA 0x{slot0 - (base & ~0xFFFFFFFFFFFFF):X})')
         print(f'{"槽号":>6}{"x":>11}{"y":>11}')
         for i in idx[:30]:
             print(f'{i:>6}{x[i]:>11.4f}{y[i]:>11.4f}')

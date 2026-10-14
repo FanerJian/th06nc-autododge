@@ -67,7 +67,7 @@ for key, vals in (('switch_margin', (0.0, 0.3, 0.5, 0.8, 1.0, 1.5)),):
         _, _, dseq = walk(192.0, 400.0, EN_DENSE, DBX, DBY, DVX, DVY, 180, key, v)
         sw = sum(1 for i in range(1, len(dseq)) if dseq[i] != dseq[i - 1])
         off = abs(cx - 300.0)
-        u2 = '✓ 往右' if useq[0] == 'right' else f'✗ {useq[0]}'
+        u2 = '通过 往右' if useq[0] == 'right' else f'失败 {useq[0]}'
         print(f'{key:<10}{v:6.1f} | {u2:>8} | ({cx:5.1f},{cy:5.1f}){off:7.1f} | {sw:6d}'
               f'{"  ← 对齐达标" if off < ENEMY_HALF_W else ""}')
 

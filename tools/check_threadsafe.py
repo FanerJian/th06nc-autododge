@@ -59,7 +59,7 @@ total = small_n + big_n
 print(f'小读 {small_n} 次 / 大读 {big_n} 次，合计 {total}')
 print(f'长度异常 {len(errors)} 次  =  {len(errors) / total * 100:.2f}%')
 for tag, got in errors[:6]:
-    print(f'  ✗ {tag} -> 实际 {got}')
-print('\n判定：' + ('线程安全 ✓' if not errors else '存在竞争 ✗'))
+    print(f'  失败 {tag} -> 实际 {got}')
+print('\n判定：' + ('线程安全 通过' if not errors else '存在竞争 失败'))
 p.close()
 sys.exit(0 if not errors else 1)

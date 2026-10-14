@@ -161,9 +161,9 @@ def check():
                 import addr
                 out.append(addr.status())
             except Exception as e:                       # noqa: BLE001
-                out.append(('bad', f'游戏构建变了：{md5} ≠ 基线 {KNOWN_MD5}\n'
-                                   f'      └ 且地址状态查询失败（{type(e).__name__}: {e}）'
-                                   ' —— 所有地址失效，跑 py tools\\autofix.py 自动重定位'))
+                out.append(('bad', f'游戏构建已变更：{md5}，与基线 {KNOWN_MD5} 不一致\n'
+                                   f'      且地址状态查询失败（{type(e).__name__}: {e}）'
+                                   '。所有地址失效，请运行 py tools\\autofix.py 自动重定位。'))
     pids = find_pids(GAME_EXE)
     out.append(('ok', f'游戏进程：{pids[0] if pids else "未运行"}'))
     return out
@@ -173,10 +173,10 @@ def main():
     print(f'th06nc 环境自检（项目根 {os.path.dirname(os.path.dirname(os.path.abspath(__file__)))}）')
     bad = 0
     for level, text in check():
-        mark = {'ok': '✓', 'warn': '!', 'bad': '✗'}[level]
+        mark = {'ok': '通过', 'warn': '注意', 'bad': '错误'}[level]
         bad += level == 'bad'
-        print(f'  {mark} {text}')
-    print('不可用：先修上面标 ✗ 的项' if bad else '可以启动')
+        print(f'  [{mark}] {text}')
+    print('不可用：请先修复上面标「错误」的项。' if bad else '可以启动。')
 
 
 if __name__ == '__main__':

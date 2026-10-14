@@ -235,7 +235,7 @@ def main():
     set_foreground(hwnd)
     time.sleep(0.4)
     if th06.user32.GetForegroundWindow() != hwnd:
-        print('✗ 游戏未取得前台焦点 —— 未发送任何按键（避免打进别的程序）')
+        print('失败 游戏未取得前台焦点 —— 未发送任何按键（避免打进别的程序）')
         p.close()
         return 1
     if not args.no_unpause:
@@ -245,11 +245,11 @@ def main():
     st = read_state(p, mb)
     code, desc, ok = screen_of(st)
     if code != 'IN_GAME':
-        print(f'✗ 当前画面 {code}：{desc} —— 标定需要「关卡进行中」，未发送任何按键')
+        print(f'失败 当前画面 {code}：{desc} —— 标定需要「关卡进行中」，未发送任何按键')
         p.close()
         return 1
     if wait_frames(p, mb, 3) == 0:
-        print('✗ 帧计数不走（游戏被暂停或最小化）—— 未发送任何按键')
+        print('失败 帧计数不走（游戏被暂停或最小化）—— 未发送任何按键')
         p.close()
         return 1
 

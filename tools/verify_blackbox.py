@@ -55,7 +55,7 @@ def main():
         for i in range(args.frames):
             w = dodge.read_frame(p, mb, motion=motion, enemy_motion=enemy_motion)
             if w is None:
-                print('✗ 读帧失败（进程退出？）')
+                print('失败 读帧失败（进程退出？）')
                 return 1
             st = read_state(p, mb)
             ps = read_player_state(p, mb)
@@ -82,7 +82,7 @@ def main():
     ok = True
     print(f'\n— 喂了 {bb.n} 帧，落盘 {bb.saves} 例，漏帧 {bb.missed_total}')
     if path is None:
-        print('✗ 没有触发落盘 —— 链路不通')
+        print('失败 没有触发落盘 —— 链路不通')
         return 1
     d = death_report.Dump(path)
     need = ('px', 'py', 'lives', 'b_n', 'l_n', 'e_n', 'b_slot', 'b_exf', 'b_dcspd',
@@ -90,9 +90,9 @@ def main():
     miss = [k for k in need if k not in d.__dict__]
     if miss:
         ok = False
-        print(f'✗ 落盘字段缺失：{miss}')
+        print(f'失败 落盘字段缺失：{miss}')
     else:
-        print(f'✓ 字段齐：{d.T} 帧，子弹键 {sum(1 for k in d.__dict__ if k.startswith("b_"))} 个')
+        print(f'通过 字段齐：{d.T} 帧，子弹键 {sum(1 for k in d.__dict__ if k.startswith("b_"))} 个')
     print('— 用解剖器验回来：')
     res, parsed = None, True
     try:
@@ -101,8 +101,8 @@ def main():
         parsed = False
         import traceback
         traceback.print_exc()               # 别只打一行消息：要看崩在哪一行
-        print(f'✗ 解剖器解析失败：{type(ex).__name__}: {ex}')
-    print(f'\n{"✓ 通过" if (ok and parsed) else "✗ 失败"}（解剖器'
+        print(f'失败 解剖器解析失败：{type(ex).__name__}: {ex}')
+    print(f'\n{"通过 通过" if (ok and parsed) else "失败 失败"}（解剖器'
           + ('找到真凶' if res else '跑完并判「无相交」—— 采样画面里本来就没撞上，属正常')
           + '）')
     if not args.keep:

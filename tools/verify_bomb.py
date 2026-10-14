@@ -85,7 +85,7 @@ def main():
     code, desc, _ = screen_of(st)
     print(f'开始前画面：{code}（{desc}）')
     if code not in ('IN_GAME', 'CONTINUE'):
-        print('✗ 需要游戏停在关卡里（有敌人会打你）。请先进入关卡再跑本工具。')
+        print('失败 需要游戏停在关卡里（有敌人会打你）。请先进入关卡再跑本工具。')
         p.close()
         return 1
 
@@ -102,7 +102,7 @@ def main():
     base = snapshot(p, mb)
     print(f'起始：{fmt(base)}')
     if base['respawn'] != RESPAWN_ALIVE:
-        print(f'⚠ 起始 respawn={base["respawn"]}（存活应为 {RESPAWN_ALIVE}）—— '
+        print(f'注意：起始 respawn={base["respawn"]}（存活应为 {RESPAWN_ALIVE}）—— '
               '可能已经在死亡窗口里，或该构建的存活值不同。')
 
     t0 = time.perf_counter()
@@ -121,7 +121,7 @@ def main():
 
             if s == last and not reporting:
                 if code not in ('IN_GAME', 'DYING'):
-                    print(f'✗ 画面变为 {code}（{desc}）—— 结束观测')
+                    print(f'失败 画面变为 {code}（{desc}）—— 结束观测')
                     break
                 time.sleep(period)
                 continue
@@ -129,7 +129,7 @@ def main():
             # 死亡窗口 = DEAD 且还有 respawn 帧可用（与 dodge.BombGuard 同一判据）
             in_window = (s['state'] == PLAYER_STATE_DEAD and (s['respawn'] or 0) > 0)
             if in_window and not (last['state'] == PLAYER_STATE_DEAD and (last['respawn'] or 0) > 0):
-                print(f'\n[{frame:5d}] ★ 进入死亡窗口：{fmt(s)}')
+                print(f'\n[{frame:5d}] 进入死亡窗口：{fmt(s)}')
                 windows.append([frame, s['respawn'], False])
                 reporting = 30
                 if not args.no_press and s['bombs']:
@@ -147,7 +147,7 @@ def main():
                     ok_rescue = (s['state'] == PLAYER_STATE_INVULNERABLE
                                  and s['lives'] == base['lives']
                                  and s['deaths'] == base['deaths'])
-                    verdict = '✓ 救回（死亡被取消）' if ok_rescue else '✗ 没救回来'
+                    verdict = '通过 救回（死亡被取消）' if ok_rescue else '失败 没救回来'
                     print(f'         {verdict}')
 
             if pressed_hold > 0:
@@ -171,7 +171,7 @@ def main():
     end = snapshot(p, mb)
     print(f'结束：{fmt(end)}')
     if not windows:
-        print('✗ 这段时间里自机没被击中过 —— 换个有弹幕的位置/时段再跑（Stage 1 前段很空）。')
+        print('失败 这段时间里自机没被击中过 —— 换个有弹幕的位置/时段再跑（Stage 1 前段很空）。')
         p.close()
         return 1
     print(f'死亡窗口 {len(windows)} 次：' +
@@ -180,8 +180,8 @@ def main():
     used = (base['bombs'] or 0) - (end['bombs'] or 0)
     print(f'结果：掉命 {lost} 条，消耗炸弹 {used} 颗')
     good = lost == 0 and used >= 1
-    print('判定：' + ('✓ 死亡炸弹成立 —— 窗口内按 X 取消了死亡' if good
-                    else '✗ 未确认（掉命说明没救回；一颗炸弹没消耗说明 X 没送达游戏）'))
+    print('判定：' + ('通过 死亡炸弹成立 —— 窗口内按 X 取消了死亡' if good
+                    else '失败 未确认（掉命说明没救回；一颗炸弹没消耗说明 X 没送达游戏）'))
     p.close()
     return 0 if good else 1
 

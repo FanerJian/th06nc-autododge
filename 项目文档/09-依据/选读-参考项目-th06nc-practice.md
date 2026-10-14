@@ -7,7 +7,9 @@
 - 仓库：`https://github.com/sky1641/th06nc-practice`
 - 发现路径：B 站视频「新典多功能辅助器效果演示」(BV1oDYo6gEsq) 简介中的下载地址
 - 性质：第三方开源 Windows x64 练习辅助，C# / .NET 9，作者自述由 AI 协助开发
-- 本地位置：`项目文档/09-依据/ref-th06nc-practice/`（`git clone --depth 1`）
+- 本地位置：`项目文档/09-依据/ref-th06nc-practice/`（`git clone --depth 1`）。
+  该上游**没有 LICENSE，未随本仓库分发** —— 需要时按上面的仓库地址自行 clone；
+  本文档记录的是已从中提取并经本机实测复核的信息。
 
 ## 2. 它做什么
 

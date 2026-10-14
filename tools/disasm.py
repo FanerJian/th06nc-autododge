@@ -51,7 +51,7 @@ def main():
         'laser': (FN_LASER_COLLISION, 0x180, '激光碰撞 LaserCollisionRva'),
         'bullets': (0x1087F, 0x120, 'bullets 钩子 (RCX=BulletManager)'),
         'player': (0x6882D, 0x120, 'player 钩子'),
-        'caller': (0x11380, 0x1C0, '★ 子弹碰撞调用者循环 (0x11418)'),
+        'caller': (0x11380, 0x1C0, '子弹碰撞调用者循环 (0x11418)'),
         'caller2': (0x37A00, 0x120, '敌人碰撞调用者 (0x37A6C)'),
     }
     for w in which:

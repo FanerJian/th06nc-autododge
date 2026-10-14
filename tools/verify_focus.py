@@ -81,22 +81,22 @@ def main():
     print(f'PID {pid}  基址 0x{mb:X}  hwnd 0x{hwnd:X}')
     print(f'画面 {code}（{desc}）')
     if near is None:
-        print('✗ 子弹读取失败 —— 未发送任何按键')
+        print('失败 子弹读取失败 —— 未发送任何按键')
         p.close()
         return 1
     print(f'最近子弹 {near:.1f}px')
 
     if code not in ('IN_GAME', 'NO_LIVES'):
-        print('✗ 需要游戏停在关卡里（暂停菜单不刷新输入位图）。未发送任何按键。')
+        print('失败 需要游戏停在关卡里（暂停菜单不刷新输入位图）。未发送任何按键。')
         p.close()
         return 1
     if near < args.near:
-        print(f'✗ 最近子弹 {near:.1f}px < {args.near:.0f}px —— 正在弹幕里，'
+        print(f'失败 最近子弹 {near:.1f}px < {args.near:.0f}px —— 正在弹幕里，'
               '拒绝抢前台（未发送任何按键）。等关卡开头的飞行段 / 对话时再跑。')
         p.close()
         return 1
     if wait_frames(p, mb, 3) == 0:
-        print('✗ 帧计数不走（游戏被暂停或最小化）—— 未发送任何按键')
+        print('失败 帧计数不走（游戏被暂停或最小化）—— 未发送任何按键')
         p.close()
         return 1
 
@@ -106,7 +106,7 @@ def main():
         set_foreground(hwnd)
         time.sleep(0.4)
         if th06.user32.GetForegroundWindow() != hwnd:
-            print('✗ 游戏未取得前台焦点 —— 未发送任何按键')
+            print('失败 游戏未取得前台焦点 —— 未发送任何按键')
             p.close()
             return 1
 
@@ -117,11 +117,11 @@ def main():
               f'斜快={sp[2]:g} 斜慢={sp[3]:g}')
         if sp[0] and sp[1]:
             print(f'           结构常量比值 慢/快 = {sp[1] / sp[0]:.4f}（依据预期 0.5）'
-                  + ('  ✓' if abs(sp[1] / sp[0] - 0.5) < 0.01 else '  ⚠ 与依据不符'))
+                  + ('  通过' if abs(sp[1] / sp[0] - 0.5) < 0.01 else '  注意：与依据不符'))
 
         th06.key_down('shift')
         if wait_frames(p, mb, HOLD_FRAMES) == 0:
-            print('✗ 按住 Shift 期间帧计数停了 —— 结果不可信')
+            print('失败 按住 Shift 期间帧计数停了 —— 结果不可信')
             return 1
         hits = []
         for _ in range(SAMPLES):
@@ -139,13 +139,13 @@ def main():
         print()
         c1 = lit > 0
         c2 = not (inp2 & FOCUS_INPUT_BIT)
-        print(f'{"✓" if c1 else "✗"} Shift 送达游戏（输入位图 bit2 置位）：{lit}/{len(hits)} 次采样')
-        print(f'{"✓" if c2 else "✗"} 松开后 bit2 归零')
+        print(f'{"通过" if c1 else "失败"} Shift 送达游戏（输入位图 bit2 置位）：{lit}/{len(hits)} 次采样')
+        print(f'{"通过" if c2 else "失败"} 松开后 bit2 归零')
         print(f'·  focus 标志（Player+0x{PLAYER_OFF_FOCUS:X}）={"跟上了" if foc_held else "没跟上"}'
               '（无方向输入时该标志可能不刷新，仅供参考）')
         ok = c1 and c2
-        print('\n判定：' + ('✓ 低速模式的按键链路成立' if ok
-                          else '✗ 未确认 —— Shift 没被游戏收到，低速模式不会生效'))
+        print('\n判定：' + ('通过 低速模式的按键链路成立' if ok
+                          else '失败 未确认 —— Shift 没被游戏收到，低速模式不会生效'))
     except KeyboardInterrupt:
         print('\n（中断）')
     finally:

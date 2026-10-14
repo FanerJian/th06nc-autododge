@@ -270,7 +270,7 @@ def locate_scalars(refd, bands, resolved, lo, hi):
         elif bad:
             sh, a, n, owner = bad[0]
             out[name] = a
-            notes[name] = (f'⚠ 位移 {sh:+#x} 唯一候选 0x{a:08X}，但它落在 {owner} 结构'
+            notes[name] = (f'注意：位移 {sh:+#x} 唯一候选 0x{a:08X}，但它落在 {owner} 结构'
                            f'内部（{n} 处引用）—— 可能是结构字段而非该全局；'
                            '需运行时读值判定（旧构建里该变量在结构外）')
         else:
@@ -558,7 +558,7 @@ def main():
     print(f'.data 0x{data_lo:X}..0x{data_hi:X}\n')
 
     insns = disasm_all(md, code, text['vaddr'])
-    print(f'反汇编 {len(insns):,} 条指令（skipdata 模式，必须）')
+    print(f'反汇编 {len(insns):,} 条指令（skipdata 模式，必须）。')
 
     idx = relocate.build_ref_index(md, code, text['vaddr'])
     refd = idx
@@ -567,7 +567,7 @@ def main():
     resolved, why = {}, {}
 
     # 1) 池基址（遍历特征 + 位移容差）—— 必须先做：它算出的位移档是后面一切筛选的基准
-    print('── 池基址（遍历特征）')
+    print('池基址（遍历特征）：')
     pools = locate_pools(data, secs, md, code, text['vaddr'], data_lo, data_hi)
     for name, (addr, n, desc) in pools.items():
         print(f'    {name:<18} 0x{addr:08X}  位移 {addr - OLD[name]:+#x}  '
@@ -576,7 +576,7 @@ def main():
         why[name] = f'{desc}（锚点 {n} 个）'
 
     bands = compute_shifts(pools)
-    print('\n── 位移档（权重 = 锚点支持数之和）')
+    print('\n位移档（权重 = 锚点支持数之和）：')
     for sh, w in sorted(bands.items(), key=lambda kv: -kv[1]):
         print(f'    {sh:+#10x}  权重 {w}')
 
@@ -584,7 +584,7 @@ def main():
     fc_all = find_frame_counter(insns, data_lo, data_hi)
     fc = pick_band([c for c in fc_all if c[0] not in resolved.values()],
                    OLD['CALC_COUNT'], bands)
-    print(f'\n── 帧计数候选：{len(fc_all)} 个 → 位移带过滤后 {len(fc)} 个')
+    print(f'\n帧计数候选：{len(fc_all)} 个，位移带过滤后 {len(fc)} 个。')
     for t, at in fc:
         print(f'    0x{t:08X}  位移 {t - OLD["CALC_COUNT"]:+#x}  '
               f'引用 {len(refd.get(t, []))} 处  @0x{at:06X}')
@@ -598,8 +598,8 @@ def main():
     # 状态机变量一定被反复读写 —— 引用数太少的排除
     sw = [c for c in sw if len(refd.get(c[0], [])) >= 3]
     sw.sort(key=lambda c: -len(refd.get(c[0], [])))
-    print(f'\n── 状态变量候选：switch 分派 {len(sw_all)} + 被赋场景号 {len(sv_all)}'
-          f' → 位移带 + 引用数过滤后 {len(sw)} 个')
+    print(f'\n状态变量候选：switch 分派 {len(sw_all)} 个，被赋场景号 {len(sv_all)} 个，'
+          f'位移带与引用数过滤后 {len(sw)} 个。')
     for t, _at in sw[:8]:
         print(f'    0x{t:08X}  位移 {t - OLD["CUR_STATE"]:+#x}  '
               f'引用 {len(refd.get(t, []))} 处')
@@ -612,7 +612,7 @@ def main():
         why['PLAYER_X'] = (f'运行时判定半径确认：{px_note}'
                            + (f'；位移档原本给 0x{old_x:08X}' if old_x else ''))
     elif px is None:
-        print(f'\n── 自机坐标未经运行时确认：{px_note}')
+        print(f'\n自机坐标未经运行时确认：{px_note}。')
 
     # 敌人池基址同理：锚点找到的是遍历起点 enemies[0]，要按占用槽回推到 manager
     em, em_note = pick_enemy_mgr(bands)
@@ -622,7 +622,7 @@ def main():
         why['EM_RVA'] = (f'运行时占用槽确认：{em_note}'
                          + (f'；锚点原本给 0x{old_em:08X}' if old_em else ''))
     elif em is None:
-        print(f'\n── 敌人池基址未经运行时确认：{em_note}')
+        print(f'\n敌人池基址未经运行时确认：{em_note}。')
 
     # 4) 位移档推其余标量
     # 先把派生地址算出来 —— 「候选不得落在结构内」这条判据要用到 PLAYER_BASE，
@@ -655,7 +655,7 @@ def main():
     resolved.update(guess)
     resolved.update(apply_derive(resolved))
 
-    print('\n── 推断结果')
+    print('\n推断结果：')
     for name in ADDR_NAMES:
         if name in resolved:
             tag = why.get(name) or notes.get(name) or '位移档 + 引用命中'
@@ -669,18 +669,18 @@ def main():
             print(f'    {name:<16} {"—":>12}  {notes.get(name, "未定位")}')
 
     # 4) 运行时验证
-    print('\n── 运行时验证')
+    print('\n运行时验证：')
     rt = runtime_check(resolved)
     if not rt:
-        print('    游戏未运行 —— 跳过（地址仍会写入，但标为待运行时验证）')
+        print('    游戏未运行，跳过（地址仍会写入，但标记为待运行时验证）。')
     elif '_paused' in rt:
-        print(f'    ! {rt["_paused"][1]}')
+        print(f'    注意：{rt["_paused"][1]}')
     else:
         for k, (ok, msg) in rt.items():
-            print(f'    {"✓" if ok else "✗"} {k:<16} {msg}')
+            print(f'    {"通过" if ok else "失败"} {k:<16} {msg}')
 
     if args.dry:
-        print('\n--dry：不写缓存')
+        print('\n--dry：不写缓存。')
         return 0
 
     # 5) 写缓存
@@ -722,7 +722,7 @@ def main():
     with open(CACHE_WRITE, 'w', encoding='utf-8') as f:
         json.dump(cache, f, ensure_ascii=False, indent=2)
     print(f'\n已写入 {CACHE_WRITE}（构建 {md5[:12]}…，{len(node["entries"])} 个地址）')
-    print('源码未改动 —— addr.py 会在 import offsets 时自动套用。')
+    print('源码未改动；addr.py 会在 import offsets 时自动套用。')
     return 0
 
 

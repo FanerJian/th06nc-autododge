@@ -17,7 +17,7 @@ th06nc-autododge/
 ├─ 项目文档/             本文档库（T1 索引 + T2 主题）
 ├─ _tmp/                截图、内存快照、中间产物；可整目录删
 └─ 项目文档/09-依据/     第三方参考，全部只读
-   ├─ ref-th06nc-practice/   练习辅助器源码（本项目地址来源）
+   ├─ ref-th06nc-practice/   练习辅助器源码（本项目地址来源；上游无 LICENSE，未随仓库分发）
    ├─ ref-th06nc-re-data/    新典符号库（函数名 / 全局名 + 样本 MD5）
    ├─ ref-th06nc-re/         新典引擎笔记（DxLib / 时序 / 档案格式）
    └─ ref-th06-decomp/src/   原版 1.02h 反编译源码（CC0）

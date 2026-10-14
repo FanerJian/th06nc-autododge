@@ -133,7 +133,7 @@ def build(path=ICON_PATH, force=False, log=print):
     os.makedirs(os.path.dirname(path), exist_ok=True)
     with open(path, 'wb') as f:
         f.write(_ico_bytes(w, h, bgra))
-    log(f'✓ 已提取游戏图标 {w}×{h} → {os.path.relpath(path, os.path.dirname(HERE))}')
+    log(f'通过 已提取游戏图标 {w}×{h} → {os.path.relpath(path, os.path.dirname(HERE))}')
     return path
 
 
@@ -144,7 +144,7 @@ def main():
     try:
         path = build(force=args.force)
     except Exception as e:
-        print(f'✗ {type(e).__name__}: {e}')
+        print(f'失败 {type(e).__name__}: {e}')
         return 1
     print(f'图标就绪：{path}')
     return 0

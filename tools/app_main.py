@@ -31,9 +31,9 @@ LOG = paths.log_path('launcher.log')
 def _fix_streams():
     """让 print 在任何启动方式下都不会炸；返回「有没有真控制台」
 
-    两种坏情况，任一都会让 alert() 自己也抛异常 → 彻底静默、用户什么都看不到：
+    两种坏情况，任一都会让 alert() 自己也抛异常，用户什么都看不到：
       · pythonw / 打包版（双击的常规方式）：sys.stdout / sys.stderr 是 None
-      · 有控制台但编码是 GBK：`✓` / `✗` 这类字符编不出来（实测 UnicodeEncodeError）
+      · 控制台编码为 GBK：非 GBK 字符编不出来（实测 UnicodeEncodeError）
     """
     has_console = sys.stdout is not None
     os.makedirs(os.path.dirname(LOG), exist_ok=True)
@@ -72,7 +72,7 @@ def alert(title, msg):
         messagebox.showerror(title, msg)
         r.destroy()
     except Exception as e:                               # noqa: BLE001
-        print(f'（弹窗也失败了：{e}）')
+        print(f'（弹窗亦失败：{e}）')
 
 
 def run_subcommand(name, rest):
@@ -86,7 +86,7 @@ def run_subcommand(name, rest):
         import autofix
         sys.argv = ['autofix'] + list(rest)
         return autofix.main()
-    print(f'✗ 未知子命令：{name}')
+    print(f'未知子命令：{name}')
     return 2
 
 
@@ -99,13 +99,13 @@ def ensure_addrs():
     try:
         import addr
     except Exception as e:                               # noqa: BLE001
-        print(f'! 地址模块不可用（{type(e).__name__}: {e}），跳过自动适配')
+        print(f'地址模块不可用（{type(e).__name__}: {e}），跳过自动适配。')
         return
     level, text = addr.status()
     if level != 'bad':
         return
-    print(f'! {text}')
-    print('  自动重定位中（读 exe 特征，不需要游戏在关卡内）…')
+    print(text)
+    print('  自动重定位中（读 exe 特征，不需要游戏在关卡内）。')
     logpath = paths.log_path('autofix.log')
     os.makedirs(os.path.dirname(logpath), exist_ok=True)
     cmd = ([sys.executable, '--run', 'autofix'] if paths.FROZEN
@@ -116,9 +116,9 @@ def ensure_addrs():
         rc = subprocess.call(cmd, stdout=logf, stderr=subprocess.STDOUT,
                              cwd=paths.app_dir())
     if rc == 0:
-        print(f'✓ 已写入地址缓存（细节见 {logpath}），继续启动')
+        print(f'已写入地址缓存（细节见 {logpath}），继续启动。')
     else:
-        print(f'✗ 自动重定位失败（退出码 {rc}）—— 细节见 {logpath}')
+        print(f'自动重定位失败（退出码 {rc}），细节见 {logpath}。')
 
 
 def check_env():
@@ -144,23 +144,23 @@ def game_running():
 def launch_game(wait=90, log=print):
     """走 Steam 启动 —— 直接跑 exe 会因 SteamAPI_RestartIfNecessary 立即退出"""
     if game_running():
-        log('游戏已在运行')
+        log('游戏已在运行。')
         return True
     import env
     steam, src = env.steam_exe()
     if not steam:
-        log(f'✗ 定位不到 Steam：{src}')
+        log(f'定位不到 Steam：{src}。')
         return False
     subprocess.Popen([steam, '-applaunch', env.APPID])
-    log(f'已请求 Steam 启动（{src}），等待进程…')
+    log(f'已请求 Steam 启动（{src}），等待进程。')
     t0 = time.time()
     while time.time() - t0 < wait:
         if game_running():
             time.sleep(2.0)          # 等窗口建好，否则 find_windows 可能还是空的
-            log('游戏进程已出现')
+            log('游戏进程已出现。')
             return True
         time.sleep(0.5)
-    log(f'✗ 等了 {wait}s 没等到游戏进程')
+    log(f'等待 {wait}s 未出现游戏进程。')
     return False
 
 
@@ -176,11 +176,11 @@ def main():
     if not args.check:
         ensure_addrs()          # 构建变了先自动重定位，再走自检
     items = check_env()
-    mark = {'ok': '✓', 'warn': '!', 'bad': '✗'}
+    mark = {'ok': '通过', 'warn': '注意', 'bad': '错误'}
     if args.check:
         bad = sum(1 for level, _ in items if level == 'bad')
-        report = '\n'.join(['环境自检：' + ('通过 ✓' if not bad else f'{bad} 个必须修的问题')]
-                           + [f'  {mark[level]} {text}' for level, text in items])
+        head = '环境自检：通过' if not bad else f'环境自检：{bad} 项必须修复'
+        report = '\n'.join([head] + [f'  [{mark[level]}] {text}' for level, text in items])
         print(report)
         if not has_console:     # 打包版没有控制台：结果同时走弹窗 + launcher.log
             alert('th06nc 自动避弹：环境自检', report)
@@ -191,7 +191,7 @@ def main():
         return 1
     for level, text in items:
         if level == 'warn':
-            print(f'! {text}')
+            print(f'注意：{text}')
 
     if args.auto:
         launch_game(log=lambda m: print(m))

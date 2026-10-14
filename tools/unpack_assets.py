@@ -55,7 +55,7 @@ def main():
     if not data_dir:
         data_dir, src = game_data_dir()
         if not data_dir:
-            print(f'✗ 定位不到游戏 data 目录：{src}')
+            print(f'失败 定位不到游戏 data 目录：{src}')
             return 1
         print(f'data 目录：{data_dir}（{src}）')
     exts = () if args.all else tuple(

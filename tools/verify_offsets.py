@@ -143,8 +143,8 @@ def check_byte_inc(p, mb, rva):
     delta = (b - a) & 0xFF
     ok = 1 <= delta <= 20
     return ok, (f'{a} → {b}（+{delta}）' +
-                ('  ✓ 六十分之一秒内递增，是帧计数' if ok
-                 else '  ✗ 没递增 —— 游戏暂停，或这不是帧计数'))
+                ('  通过 六十分之一秒内递增，是帧计数' if ok
+                 else '  失败 没递增 —— 游戏暂停，或这不是帧计数'))
 
 
 def check_idx(p, mb, rva):
@@ -154,7 +154,7 @@ def check_idx(p, mb, rva):
         return False, '读取失败'
     v = struct.unpack('<i', d)[0]
     ok = 0 <= v <= 2048
-    return ok, f'nextIndex = {v}' + ('' if ok else '  ✗ 越界（不像索引）')
+    return ok, f'nextIndex = {v}' + ('' if ok else '  失败 越界（不像索引）')
 
 
 CHECKERS = dict(enemy=check_enemy, bullet=check_bullet, laser=check_laser,
@@ -217,7 +217,7 @@ def main():
             ok, detail = CHECKERS[c['kind']](p, mb, c['rva'])
         except Exception as e:                       # noqa: BLE001
             ok, detail = False, f'检查抛错：{e}'
-        mark = '✓' if ok else '✗'
+        mark = '通过' if ok else '失败'
         n_ok += 1 if ok else 0
         print(f'{mark} {c["name"]:<18} RVA 0x{c["rva"]:08X}   {detail}')
         print(f'    依据：{c["why"]}')
@@ -231,7 +231,7 @@ def main():
             a = struct.unpack('<ff', d1)
             b = struct.unpack('<ff', d2)
             moved = abs(a[0] - b[0]) > 0.01 or abs(a[1] - b[1]) > 0.01
-            print(f'  {"✓" if moved else "✗"} 0.2s 内 ({a[0]:.1f},{a[1]:.1f}) → '
+            print(f'  {"通过" if moved else "失败"} 0.2s 内 ({a[0]:.1f},{a[1]:.1f}) → '
                   f'({b[0]:.1f},{b[1]:.1f})  '
                   f'{"有变化" if moved else "没变（游戏暂停？或地址不是自机坐标）"}')
     p.close()

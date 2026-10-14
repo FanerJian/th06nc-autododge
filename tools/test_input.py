@@ -28,7 +28,7 @@ def main():
     games = find_windows(pid=pid, title_sub='Embodiment')
     ghwnd = games[0][0] if games else 0
     print(f'前台 hwnd=0x{fg:X}   游戏 hwnd=0x{ghwnd:X}   '
-          f'{"游戏在前台" if fg == ghwnd else "游戏不在前台 ⚠"}')
+          f'{"游戏在前台" if fg == ghwnd else "游戏不在前台 注意"}')
     print(f'标题: {games[0][2] if games else "?"}')
 
     def xy():
@@ -55,7 +55,7 @@ def main():
     print(f'  -> ({x2:.2f}, {y2:.2f})   dx={x2-x1:+.2f}')
 
     moved = abs(x1 - x0) > 1 or abs(x2 - x1) > 1
-    print(f'\n结论: 游戏{"在失焦状态下仍响应全局按键 ✓" if moved else "失焦时不响应按键 ✗"}')
+    print(f'\n结论: 游戏{"在失焦状态下仍响应全局按键 通过" if moved else "失焦时不响应按键 失败"}')
     p.close()
 
 

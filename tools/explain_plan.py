@@ -224,12 +224,12 @@ def main():
     print(f'自机 ({px:.1f},{py:.1f})  弹 {len(bx)}  敌 {w["n_enemy"]}  激 {w["n_laser"]}  '
           f'道具 {w["n_item"]}  目标 {target}  火力 {w.get("power", 0):.0f}  '
           f'可转化价值 {w.get("poc_val", 0.0):.1f}'
-          + (f'  ★ 冲线中 → ({poc[0]:.0f},{poc[1]:.0f})' if dashing else ''))
+          + (f'  冲线中 → ({poc[0]:.0f},{poc[1]:.0f})' if dashing else ''))
     if warn is not None and len(warn):
         cd = [int(c) for c in warn]
         soon = [c for c in cd if 0 <= c <= a.warn]
         print(f'发弹倒计时 {cd}（-1 = 不射击）'
-              + (f'  ★ {len(soon)} 个敌人进入预警窗口 {a.warn:.0f} 帧：{soon}' if soon
+              + (f'  {len(soon)} 个敌人进入预警窗口 {a.warn:.0f} 帧：{soon}' if soon
                  else f'  （窗口 {a.warn:.0f} 帧内无敌人发弹）'))
     print(f'参数 edge={a.edge} margin={a.margin} switch={a.switch} attack={a.attack} '
           f'standoff={a.standoff}（输出带 {a.standoff:.0f}..{a.standoff + ATTACK_REACH:.0f}px）'
