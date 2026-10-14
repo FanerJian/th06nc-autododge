@@ -52,8 +52,15 @@ powershell -ExecutionPolicy Bypass -File tools\build_release.ps1 `
 | 自动重定位 | `py tools\autofix.py` | `exe --run autofix`（内部子命令） |
 | 路径规则 | 全部由 `tools/paths.py` 决定 —— 别在别处写 `dirname(__file__)` | 同左 |
 
-发布渠道：推 `v*` tag → `.github/workflows/release.yml` 自动构建并挂 Release；
-手动触发只出 Actions artifact，不动 Release。
+发布渠道（正式包在本机打，需装有游戏才能提取图标）：
+
+```powershell
+powershell -File tools\build_release.ps1 -Version 0.1.0
+gh release create v0.1.0 dist\v0.1.0\*.zip dist\v0.1.0\SHA256SUMS.txt
+```
+
+`.github/workflows/release.yml` 在推 `v*` tag 或手动触发时只做构建验证（产物走
+Actions artifact）：托管运行器没有游戏本体，打出来的包不带图标，不作为发布件。
 
 ## 自动探测规则（`tools/env.py` + `tools/addr.py` 实现）
 

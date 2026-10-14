@@ -1,14 +1,25 @@
 name: release
 
-# 推 tag（v0.1.0 这种）→ 构建发布包并挂到 Release；
-# 手动触发 → 只构建，产物走 Actions artifact，不动 Release。
+# 推 tag（v0.1.0 这种）或手动触发 → 在 GitHub 托管运行器上构建发布包，产物走
+# Actions artifact，用于验证「别人拿到源码也能打出包」。
+#
+# 为什么不在这里挂 Release：发布包要求 exe 带游戏图标，而图标由 tools\make_icon.py
+# 从本机游戏 exe 提取，属于游戏资产、不进仓库；托管运行器上没有游戏本体，
+# 因此这里只能构建无图标包 —— 它不适合作为对外发布件。
+# 正式发布步骤见 项目文档/03-环境/相关-跨设备部署-DEPLOY.md：
+#     powershell -File tools\build_release.ps1 -Version 0.1.0
+#     gh release create v0.1.0 dist\v0.1.0\*.zip dist\v0.1.0\SHA256SUMS.txt
 on:
   push:
     tags: ['v*']
   workflow_dispatch:
+    inputs:
+      version:
+        description: 构建版本号（手动触发时使用，无需 v 前缀）
+        default: '0.0.0-dev'
 
 permissions:
-  contents: write          # 上传 Release 资产需要
+  contents: read
 
 jobs:
   build:
@@ -27,22 +38,17 @@ jobs:
 
       - name: 构建发布包
         shell: pwsh
+        env:
+          REF_TYPE: ${{ github.ref_type }}
+          REF_NAME: ${{ github.ref_name }}
+          MANUAL_VERSION: ${{ inputs.version }}
         run: |
+          $ver = if ($env:REF_TYPE -eq 'tag') { $env:REF_NAME } else { $env:MANUAL_VERSION }
           $py = (Get-Command python).Source
-          ./tools/build_release.ps1 -Version ${{ github.ref_name }} -PythonExe $py
+          ./tools/build_release.ps1 -Version $ver -PythonExe $py
 
-      - name: 临时构建产物（手动触发时）
-        if: github.event_name == 'workflow_dispatch'
+      - name: 上传构建产物
         uses: actions/upload-artifact@v4
         with:
           name: th06nc-autododge-win64
           path: dist/**/*.zip
-
-      - name: 挂到 Release（推 tag 时）
-        if: startsWith(github.ref, 'refs/tags/')
-        uses: softprops/action-gh-release@v2
-        with:
-          files: |
-            dist/**/*.zip
-            dist/**/SHA256SUMS.txt
-          generate_release_notes: true

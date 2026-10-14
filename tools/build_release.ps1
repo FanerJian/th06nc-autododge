@@ -1,4 +1,4 @@
-﻿<#
+<#
 .SYNOPSIS
   打发布包：PyInstaller onedir → 使用说明 → zip → SHA256SUMS.txt
 
@@ -40,9 +40,14 @@ if (-not $OutRoot) { $OutRoot = Join-Path $repoRoot "dist\v$Version" }
 $OutRoot = [IO.Path]::GetFullPath($OutRoot)
 $workDir = Join-Path $repoRoot '_tmp\pyinstaller'
 
-foreach ($f in @($entry, $ico, $cache)) {
+foreach ($f in @($entry, $cache)) {
     if (-not (Test-Path -LiteralPath $f)) { throw "缺少必需文件：$f" }
 }
+# 图标由 `py tools\make_icon.py` 从本机游戏 exe 提取，不作为游戏资产进入仓库。
+# 缺图标时按无图标继续构建（只影响 exe 外观）：CI 运行器上没有游戏本体，
+# 正式发布包请在装有游戏的机器上打。
+$hasIcon = Test-Path -LiteralPath $ico
+if (-not $hasIcon) { Write-Host "未找到图标 $ico，本次构建不带图标。" }
 if ((Test-Path -LiteralPath $OutRoot) -and (Get-ChildItem -LiteralPath $OutRoot -Force)) {
     throw "输出目录不是空的：$OutRoot（换个 -Version，或先手工删除）"
 }
@@ -74,9 +79,12 @@ $pyArgs = @(
     '-m', 'PyInstaller',
     '--noconfirm', '--clean',
     '--onedir', '--windowed',
-    '--name', $appName,
-    '--icon', $ico,
-    '--add-data', "$assets;tools/assets",
+    '--name', $appName
+)
+if ($hasIcon) {
+    $pyArgs += @('--icon', $ico, '--add-data', "$assets;tools/assets")
+}
+$pyArgs += @(
     '--add-data', "$cache;tools",
     '--distpath', $OutRoot,
     '--workpath', $workDir,
