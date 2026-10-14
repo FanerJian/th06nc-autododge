@@ -3,3 +3,7 @@
 *.ps1 text eol=crlf
 *.ico binary
 *.png binary
+
+# 语言统计只看本仓库代码：依据目录是上游项目源码，文档目录是设计文档
+项目文档/09-依据/** linguist-vendored
+项目文档/** linguist-documentation
